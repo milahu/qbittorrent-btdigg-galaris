@@ -207,8 +207,11 @@ def retrieve_url(url):
     req = urllib.request.Request(url, headers=headers)
     try:
         response = urllib.request.urlopen(req)
-    except urllib.error.URLError as errno:
-        print(" ".join(("Connection error:", str(errno.reason))))
+    except urllib.error.HTTPError as exc:
+        print(f"Connection error: HTTP {exc.status} {exc.reason}")
+        return ""
+    except urllib.error.URLError as exc:
+        print(f"Connection error: {type(exc).__name__} {exc}")
         return ""
     dat = response.read()
     # Check if it is gzipped
